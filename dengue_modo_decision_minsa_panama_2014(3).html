@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071c24">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dengue">
+<title>Dengue · Modo Decisión · MINSA Panamá 2014</title>
+<style>
+:root{--bg:#071c24;--card:#0e2b35;--card2:#123843;--ink:#eef9f8;--muted:#a9c8ca;--accent:#57d6c5;--warn:#ffd166;--danger:#ff7b7b;--line:#24505a}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(145deg,#06171e,#0b2730);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:980px;margin:auto;padding:28px 18px 50px}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:20px}
+h1{font-size:clamp(28px,5vw,46px);margin:0}.sub{color:var(--muted);max-width:700px}.badge{border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--accent);font-size:13px;text-decoration:none;white-space:nowrap}
+.progress{height:7px;background:#12313a;border-radius:10px;overflow:hidden;margin:22px 0}.bar{height:100%;background:var(--accent);width:0;transition:.25s}
+.card{background:rgba(14,43,53,.94);border:1px solid var(--line);border-radius:22px;padding:25px;box-shadow:0 18px 50px #0003}
+.kicker{color:var(--accent);font-weight:750;text-transform:uppercase;letter-spacing:.08em;font-size:12px}.q{font-size:25px;font-weight:750;margin:8px 0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.btn{background:#123843;color:var(--ink);border:1px solid #2c5962;border-radius:16px;padding:17px;text-align:left;cursor:pointer;font-size:16px;transition:.15s}.btn:hover{transform:translateY(-2px);border-color:var(--accent)}.btn strong{display:block}.btn small{display:block;color:var(--muted);margin-top:5px}
+.notice{padding:14px 16px;border-radius:14px;background:#102f38;border-left:4px solid var(--accent);margin:15px 0}.danger{border-left-color:var(--danger)}.warn{border-left-color:var(--warn)}
+ul{padding-left:22px}.result{border:1px solid #39706f;background:#0c3339}.result h2{margin-top:4px}.pill{display:inline-block;border:1px solid #39706f;border-radius:999px;padding:4px 9px;color:var(--accent);font-size:12px;margin:3px}
+.actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}.back,.restart{background:transparent;color:var(--muted);border:1px solid var(--line);padding:10px 14px;border-radius:12px;cursor:pointer}.source{font-size:12px;color:var(--muted);margin-top:22px}
+.footer{margin-top:20px;color:var(--muted);font-size:12px;text-align:center}
+input{width:100%;padding:13px;border-radius:12px;border:1px solid var(--line);background:#09232b;color:white}
+.check{display:flex;gap:10px;align-items:flex-start;background:#102f38;padding:12px;border-radius:12px;margin:7px 0}.check input{width:auto;margin-top:5px}
+@media(max-width:600px){.card{padding:19px}.q{font-size:21px}}
+/* ===== UX táctil / responsive (solo presentación) ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-wrap:anywhere}
+button,label,a{touch-action:manipulation}
+.app{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right));padding-top:max(28px,env(safe-area-inset-top));padding-bottom:max(50px,env(safe-area-inset-bottom))}
+.badge{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;flex-shrink:0}
+.btn{min-height:56px;width:100%;font-family:inherit;-webkit-appearance:none;appearance:none}
+.btn:active{transform:scale(.985);background:#1a4a57;border-color:var(--accent)}
+.btn strong{font-size:17px}
+@media(hover:none){.btn:hover{transform:none;border-color:#2c5962}}
+:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.back,.restart{min-height:48px;padding:0 20px;font-size:16px;font-family:inherit;-webkit-appearance:none;appearance:none}
+.actions .btn{width:auto;flex:1 1 100%}
+.check{min-height:60px;align-items:center;gap:14px;padding:12px 14px;margin:9px 0;cursor:pointer;border:1px solid #2c5962;font-size:17px;line-height:1.4;-webkit-user-select:none;user-select:none}
+.check input{width:28px;height:28px;min-width:28px;margin:0;accent-color:var(--accent);cursor:pointer}
+.check:has(input:checked){background:#14424a;border-color:var(--accent)}
+.check:active{background:#1a4a57}
+.result .pill{font-size:18px;font-weight:800;letter-spacing:.06em;padding:7px 18px;margin:0 0 8px;border-width:2px}
+.pill[data-g="C"]{color:var(--danger);border-color:var(--danger)}
+.pill[data-g="B2"]{color:var(--warn);border-color:var(--warn)}
+.result li{margin:6px 0}
+.result ul ul{margin:6px 0}
+.notice{line-height:1.5}
+.card{animation:in .18s ease-out}
+@keyframes in{from{opacity:.4}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.card{animation:none}.bar,.btn{transition:none}}
+.progress{position:sticky;top:0;z-index:5}
+@media(max-width:600px){
+ .app{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-top:max(16px,env(safe-area-inset-top))}
+ .top{flex-direction:column;align-items:flex-start;gap:12px}
+ .top .badge{align-self:flex-start;order:-1}
+ h1{font-size:30px}
+ .card{padding:18px 16px;border-radius:18px}
+ .q{font-size:21px}
+ .grid{grid-template-columns:1fr}
+ .actions{position:sticky;bottom:0;background:linear-gradient(transparent,#0e2b35 28%);padding:14px 0 max(6px,env(safe-area-inset-bottom));margin-bottom:-6px}
+ .actions .back,.actions .restart{flex:1 1 40%}
+}
+@media(min-width:700px){
+ .app{padding-top:36px}
+ .card{padding:32px}
+ .q{font-size:28px}
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .result>ul,.result>.notice{max-width:none}
+ .actions .btn{flex:1 1 0}
+}
+@media(min-width:700px) and (max-width:1000px){.result h2{font-size:26px}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top"><div><div class="kicker">Herramienta educativa · fuente única</div><h1>Dengue: modo decisión</h1><div class="sub">Un flujo interactivo basado exclusivamente en las <b>Guías para el abordaje integral del Dengue en Panamá, 2014</b>.</div></div><a class="badge" href="https://www.minsa.gob.pa/publicaciones/guias-para-el-abordaje-integral-del-dengue-en-panama-2014-ii-edicion" target="_blank" rel="noopener">MINSA · 2014 ↗</a></div>
+<div class="progress" role="progressbar" aria-label="Progreso"><div class="bar" id="bar"></div></div>
+<main id="app" aria-live="polite"></main>
+<div class="footer">Esta interfaz reorganiza la guía para hacerla navegable. No añade recomendaciones externas ni sustituye el documento oficial, el juicio clínico ni los protocolos institucionales vigentes.</div>
+</div>
+<script>
+const alarmas=[
+"Dolor abdominal intenso y continuo o dolor a la palpación",
+"Vómitos persistentes",
+"Acumulación de líquidos en cavidades serosas, por clínica o imágenes",
+"Cualquier sangrado anormal",
+"Letargia, somnolencia o irritabilidad",
+"Hipotensión postural o lipotimia",
+"Hepatomegalia > 2 cm",
+"Hematocrito elevado para edad/sexo con plaquetopenia o aumento del hematocrito con disminución de plaquetas en dos muestras consecutivas"
+];
+const app=document.getElementById('app'), bar=document.getElementById('bar');
+let history=[], state={};
+function render(step, data={}){
+  state={...state,...data}; history.push({step,state:{...state}});
+  const n=history.length; bar.style.width=Math.min(96,n*16)+'%';
+  let html='';
+  if(step==='start') html=`
+  <div class="card"><div class="kicker">Paso 1 · sospecha</div><div class="q">¿El cuadro encaja con la definición clínica de dengue de la guía?</div>
+  <div class="notice">Persona que vive o ha viajado en los últimos 14 días a áreas con transmisión de dengue, con fiebre de elevación brusca o historia de fiebre reciente ≤7 días, más ≥2 manifestaciones compatibles.</div>
+  <div class="grid">
+   <button class="btn" onclick="render('suspect',{suspect:true})"><strong>Sí / compatible</strong><small>Continuar al triage clínico.</small></button>
+   <button class="btn" onclick="render('no',{suspect:false})"><strong>No</strong><small>La guía no permite clasificarlo aquí como dengue clínico.</small></button>
+  </div>
+  <div class="source">Manifestaciones listadas: malestar general; cefalea/dolor retroorbitario; dolor muscular o articular; náuseas/vómitos; exantema; leucopenia; petequias o prueba de torniquete positiva.</div></div>`;
+  if(step==='no') html=`<div class="card result"><div class="kicker">Salida</div><h2>No entra en el flujo clínico de dengue de esta herramienta.</h2><p>La guía señala que el diagnóstico diferencial debe considerarse cuando corresponda. Esta app no inventa un algoritmo alternativo.</p><div class="actions"><button class="restart" onclick="restart()">↺ Reiniciar</button></div></div>`;
+  if(step==='suspect') html=`
+  <div class="card"><div class="kicker">Paso 2 · gravedad inmediata</div><div class="q">¿Hay criterios de dengue grave?</div>
+  <div class="grid">
+   <button class="btn" onclick="render('grave')"><strong>Sí — hay algún criterio</strong><small>Revisa los criterios completos de dengue grave de la guía:</small>
+<ul style="margin:9px 0 0;padding-left:20px;color:var(--muted)">
+<li>Escape importante de plasma que conduce a choque y/o acumulación de líquido con dificultad respiratoria.</li>
+<li>Sangrado grave, evaluado clínicamente.</li>
+<li>Compromiso/daño grave de órganos: AST o ALT ≥1.000 U/L; alteración de conciencia; o compromiso de otros órganos.</li>
+</ul></button>
+   <button class="btn" onclick="render('alarms')"><strong>No / no identificado</strong><small>Buscar signos de alarma antes de asignar grupo.</small></button>
+  </div></div>`;
+  if(step==='grave') html=`
+  <div class="card result"><span class="pill">GRUPO C</span><div class="kicker">Dengue grave</div><h2>Tratamiento de urgencia y hospitalización</h2>
+  <div class="notice danger"><b>Criterios:</b> escape importante de plasma → choque y/o acumulación de fluidos en pulmón u otros sitios; sangrado grave; daño orgánico grave.</div>
+  <ul><li>Hospitalizar, preferentemente en UCI.</li><li>Iniciar reposición IV con soluciones isotónicas; la guía señala cristaloides como elección para la reanimación.</li><li>Monitorizar estrechamente estado hemodinámico, diuresis y hematocrito.</li><li>La guía contempla escalamiento de bolos y, excepcionalmente, coloides según respuesta clínica y hematocrito.</li></ul>
+  <div class="notice warn"><b>Laboratorio descrito por la guía:</b> hemograma completo, grupo sanguíneo/Rh, perfil de coagulación, Rx de tórax y ecografía abdominal si es posible.</div>
+  <div class="grid"><button class="btn" onclick="render('cfluids')"><strong>Ver algoritmo de líquidos del Grupo C</strong><small>Solo lo que especifica la guía.</small></button><button class="btn" onclick="render('monitor')"><strong>Ver monitorización</strong><small>Qué vigilar durante el manejo.</small></button></div>
+  <div class="actions"><button class="restart" onclick="restart()">↺ Nuevo paciente</button></div></div>`;
+  if(step==='cfluids') html=`
+  <div class="card"><div class="kicker">Grupo C · líquidos</div><div class="q">Algoritmo de reanimación descrito en la guía</div>
+  <ul><li>Si choque con hematocrito alto: cristaloide <b>20 ml/kg en 15–30 min</b>; reevaluar clínica y hematocrito.</li><li>Si mejora y baja el hematocrito: continuar y reducir progresivamente según evolución.</li><li>Si tras dos bolos continúa inestable y hematocrito alto: tercer bolo de cristaloide a igual dosis/velocidad.</li><li>Si persiste choque con hematocrito alto pese a cristaloides: evaluar excepcionalmente coloide <b>10–20 ml/kg en 30–60 min</b>.</li><li>Si mejora con coloide y baja hematocrito: cristaloide <b>10 ml/kg/h durante 1–2 h</b>, luego reducción progresiva.</li><li>Si no mejora: la guía indica reevaluar hemodinámica/diuresis, función de bomba, comorbilidades, acidosis y riesgo de hemorragia.</li></ul>
+  <div class="notice danger">No sobrehidratar. Cada paso requiere reevaluación clínica y del hematocrito según la guía.</div>
+  <div class="actions"><button class="back" onclick="back()">← Atrás</button><button class="restart" onclick="restart()">↺ Reiniciar</button></div></div>`;
+  if(step==='alarms') html=`
+  <div class="card"><div class="kicker">Paso 3 · signos de alarma</div><div class="q">Selecciona todos los que estén presentes</div>
+  <div id="checks">${alarmas.map((x,i)=>`<label class="check"><input type="checkbox" value="${i}" id="al${i}"> <span>${x}</span></label>`).join('')}</div>
+  <div class="actions"><button class="btn" onclick="checkAlarms()"><strong>Continuar</strong><small>Clasificar según lo seleccionado.</small></button></div>
+  <div class="source">La fiebre no es el marcador de gravedad; la guía enfatiza los signos de alarma.</div></div>`;
+  if(step==='b2') html=`
+  <div class="card result"><span class="pill">GRUPO B2</span><div class="kicker">Dengue con signos de alarma</div><h2>Objetivo: prevenir el choque</h2>
+  <ul><li>Hemograma completo antes de hidratar; si no hay hematocrito disponible, no retrasar la hidratación.</li><li>Vigilar signos vitales, especialmente PA, presión de pulso, PAM y FC.</li><li>Balance de líquidos/electrolitos.</li><li>Diuresis cada hora durante las primeras 4–6 h, luego cada 4 h.</li><li>Hematocrito antes y después del reemplazo y luego cada 12–24 h; glucosa antes del reemplazo y según necesidad cada 12–24 h.</li></ul>
+  <div class="notice"><b>Cristaloide:</b> 10 ml/kg en la primera hora; preferentemente Lactato de Ringer o similares, o SSN 0,9%. Si no hay mejoría, repetir 1–2 veces. Tras 3 cargas sin mejoría → manejar como dengue grave.</div>
+  <ul><li>Si mejora y diuresis ≥1 ml/kg/h: 5–7 ml/kg/h por 2–4 h.</li><li>Si continúa mejorando: 3–5 ml/kg/h por 2–4 h.</li><li>Si continúa mejorando: 2–4 ml/kg/h e iniciar vía oral.</li><li>Deterioro clínico o aumento rápido del hematocrito → dengue grave con choque.</li></ul>
+  <div class="notice warn">Seguimiento diario hasta que pase el riesgo o 48 h después de la desaparición de la fiebre sin antipiréticos.</div>
+  <div class="actions"><button class="restart" onclick="restart()">↺ Nuevo paciente</button></div></div>`;
+  if(step==='b1check') html=`
+  <div class="card"><div class="kicker">Paso 4 · sin signos de alarma</div><div class="q">¿Existe una condición coexistente o riesgo social?</div>
+  <div class="grid">
+   <button class="btn" onclick="render('b1')"><strong>Sí</strong><small>Esto orienta a Grupo B1.</small></button>
+   <button class="btn" onclick="render('a')"><strong>No</strong><small>Comprobar tolerancia oral y diuresis para Grupo A.</small></button>
+  </div>
+  <div class="source">Condiciones descritas: embarazo, lactante <2 años, adulto mayor ≥65 años, obesidad, diabetes mellitus, cardiopatía, hemoglobinopatías, etc. Riesgo social: vivir solo, difícil acceso al hospital, pobreza extrema.</div></div>`;
+  if(step==='b1') html=`
+  <div class="card result"><span class="pill">GRUPO B1</span><div class="kicker">Dengue sin signos de alarma + condición coexistente/riesgo social</div><h2>Observación y manejo en primer nivel / unidad de dengue</h2>
+  <ul><li>Tratar las condiciones asociadas con estricta vigilancia.</li><li>Si no bebe/bebe poco o está deshidratado: iniciar líquidos IV para rehidratar/mantener hidratación con Lactato de Ringer o cristaloides, <b>2–3 ml/kg/h</b>, y reiniciar vía oral tan pronto sea posible.</li><li>Uso de mosquitero.</li><li><b>Tratamiento sintomático como Grupo A:</b>
+  <ul>
+   <li>Reposo en cama.</li>
+   <li>Paracetamol: adultos 500–750 mg VO cada 4–6 h, máximo 4 g/día; niños 10 mg/kg cada 6 h, máximo 3 g/día.</li>
+   <li>Medios físicos: compresas de agua tibia en la frente.</li>
+   <li>Dieta normal + líquidos abundantes; preferiblemente SRO.</li>
+   <li>Evitar AINE/aspirina, esteroides y antibióticos según la guía.</li>
+  </ul>
+</li><li>Seguimiento por personal de salud y reevaluación según evolución.</li></ul>
+  <div class="actions"><button class="restart" onclick="restart()">↺ Nuevo paciente</button></div></div>`;
+  if(step==='a') html=`
+  <div class="card"><div class="kicker">Paso 5 · Grupo A</div><div class="q">¿Tolera líquidos por vía oral y ha orinado al menos una vez en las últimas 6 horas?</div>
+  <div class="grid">
+   <button class="btn" onclick="render('agroup')"><strong>Sí</strong><small>Grupo A: manejo en el hogar, si no hay otras condiciones.</small></button>
+   <button class="btn" onclick="render('b1')"><strong>No</strong><small>La guía orienta a hidratación IV/observación.</small></button>
+  </div></div>`;
+  if(step==='agroup') html=`
+  <div class="card result"><span class="pill">GRUPO A</span><div class="kicker">Dengue sin signos de alarma</div><h2>Manejo en el hogar</h2>
+  <ul><li>Reposo en cama.</li><li>Uso de mosquitero.</li><li>Paracetamol: adultos 500–750 mg VO cada 4–6 h, máximo 4 g/día; niños 10 mg/kg cada 6 h, máximo 3 g/día.</li><li>Medios físicos: compresas de agua tibia en la frente.</li><li>Dieta normal + líquidos abundantes; preferiblemente SRO.</li><li>Adultos: al menos cinco vasos de 250 ml o más al día para un adulto promedio de 70 kg.</li><li>Niños: líquidos según Holliday–Segar; no suspender lactancia materna.</li><li>Evitar AINE/aspirina, esteroides y antibióticos según la guía.</li><li>Evaluación diaria y hemograma cada 24 h o al menos cada 48 h, hasta 24–48 h después del descenso de la fiebre sin antipiréticos.</li><li>Regresar urgentemente si aparece cualquier signo de alarma.</li></ul>
+  <div class="notice warn"><b>Recordatorio:</b> todo menor, adulto mayor o discapacitado debe ser vigilado por un adulto orientado en cuidados del dengue.</div>
+  <div class="actions"><button class="restart" onclick="restart()">↺ Nuevo paciente</button></div></div>`;
+  if(step==='monitor') html=`
+  <div class="card"><div class="kicker">Monitorización</div><div class="q">Lista de vigilancia de la guía</div>
+  <div class="grid">${["Temperatura","Frecuencia cardíaca","Frecuencia respiratoria","Tensión arterial","Presión de pulso","Calidad del pulso","Glasgow","Cianosis / palidez","Dolor abdominal","Vómitos persistentes","Acumulación de líquidos","Sangrado anormal","Letargia/irritabilidad","Hipotensión postural/lipotimia","Hígado >2 cm","Llenado capilar","Frialdad distal","Volumen de orina","Diuresis cc/kg/h","Líquidos cc/kg/h"].map(x=>`<div class="notice">${x}</div>`).join('')}</div>
+  <div class="actions"><button class="back" onclick="back()">← Atrás</button><button class="restart" onclick="restart()">↺ Reiniciar</button></div></div>`;
+  app.innerHTML=html;
+  enhance(step);
+}
+function enhance(step){
+  // Botón "Atrás" en todas las pantallas excepto la primera
+  if(history.length>1 && !app.querySelector('.back')){
+    const card=app.querySelector('.card'); if(!card) return;
+    let act=card.querySelector(':scope > .actions');
+    if(!act){act=document.createElement('div');act.className='actions';card.appendChild(act)}
+    const b=document.createElement('button');b.className='back';b.type='button';b.textContent='← Atrás';b.onclick=back;
+    act.insertBefore(b,act.firstChild);
+  }
+  // Color del grupo en resultados
+  const p=app.querySelector('.pill');
+  if(p){const m=p.textContent.match(/GRUPO\s+(\w+)/);if(m)p.dataset.g=m[1]}
+  // Subir al inicio de la tarjeta en cada pantalla
+  window.scrollTo(0,0);
+}
+function checkAlarms(){
+ const selected=[...document.querySelectorAll('#checks input:checked')].map(x=>+x.value);
+ render(selected.length?'b2':'b1check',{alarms:selected});
+}
+function back(){if(history.length>1){history.pop();const h=history.pop();render(h.step,h.state)}}
+function restart(){history=[];state={};render('start')}
+render('start');
+</script>
+</body></html>
